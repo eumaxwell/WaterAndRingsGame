@@ -1,4 +1,4 @@
-package com.example.maxwell.delorean;
+com.example.max.waterandrings;
 
 import android.app.Activity;
 import android.os.Bundle;
