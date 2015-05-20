@@ -1,4 +1,4 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater.GameObjects;
 
 /**
  * Created by Max on 16/05/2015.
@@ -6,6 +6,7 @@ package com.example.max.waterandrings;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 
 public class Player extends GameObject{
     private Bitmap spritesheet;

@@ -1,4 +1,4 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

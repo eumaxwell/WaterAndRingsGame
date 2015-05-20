@@ -1,10 +1,12 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater.GameObjects;
 
 /**
  * Created by Max on 16/05/2015.
  */
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+
+import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 
 public class TopBorder extends GameObject{
     private Bitmap image;

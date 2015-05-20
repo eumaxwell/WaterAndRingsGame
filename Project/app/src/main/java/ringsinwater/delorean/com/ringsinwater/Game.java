@@ -1,4 +1,4 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater;
 
 /**
  * Created by Max on 16/05/2015.
@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+
+import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 
 
 public class Game extends Activity {
@@ -31,7 +33,7 @@ public class Game extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
 

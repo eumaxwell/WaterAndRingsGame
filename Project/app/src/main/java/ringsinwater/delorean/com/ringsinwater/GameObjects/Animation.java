@@ -1,4 +1,4 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater.GameObjects;
 
 /**
  * Created by Max on 16/05/2015.

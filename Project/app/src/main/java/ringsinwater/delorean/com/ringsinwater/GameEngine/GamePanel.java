@@ -1,4 +1,4 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater.GameEngine;
 
 /**
  * Created by Max on 16/05/2015.
@@ -10,18 +10,32 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+import ringsinwater.delorean.com.ringsinwater.GameEngine.MainThread;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Background;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.BotBorder;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Explosion;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Missile;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Player;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Smokepuff;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.TopBorder;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.GameObject;
+import ringsinwater.delorean.com.ringsinwater.R;
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
-    public static final int WIDTH = 856;
-    public static final int HEIGHT = 480;
+    public static int WIDTH ;
+    public static int HEIGHT;
     public static final int MOVESPEED = -5;
     private long smokeStartTime;
     private long missileStartTime;
@@ -53,8 +67,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public GamePanel(Context context)
     {
+
         super(context);
 
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+
+        WIDTH = displayMetrics.widthPixels;
+        HEIGHT = displayMetrics.heightPixels;
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
@@ -89,7 +108,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder){
 
-        bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
+        bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.fundo));
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
         smoke = new ArrayList<Smokepuff>();
         missiles = new ArrayList<Missile>();

@@ -1,8 +1,9 @@
-package com.example.max.waterandrings;
+package ringsinwater.delorean.com.ringsinwater.GameObjects;
 
 /**
- * Created by Max on 16/05/2015.
+ * Created by Max on 19/05/2015.
  */
+
 import android.graphics.Rect;
 
 public abstract class GameObject {
