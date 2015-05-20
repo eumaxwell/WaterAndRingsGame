@@ -67,6 +67,10 @@ public class Player extends GameObject{
 
     }
 
+    public void changeX(float x)    {
+        this.x += x;
+    }
+
     public void draw(Canvas canvas)
     {
         canvas.drawBitmap(animation.getImage(),x,y,null);

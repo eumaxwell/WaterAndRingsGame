@@ -10,17 +10,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import ringsinwater.delorean.com.ringsinwater.GameEngine.MainThread;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Background;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.BotBorder;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Explosion;
@@ -32,7 +33,7 @@ import ringsinwater.delorean.com.ringsinwater.GameObjects.GameObject;
 import ringsinwater.delorean.com.ringsinwater.R;
 
 
-public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener
 {
     public static int WIDTH ;
     public static int HEIGHT;
@@ -62,8 +63,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private boolean dissapear;
     private boolean started;
     private int best;
+    private long lastUpdate;
 
-
+    private SensorManager senSensorManager;
+    private Sensor senAccelerometer;
 
     public GamePanel(Context context)
     {
@@ -78,11 +81,51 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
 
-
-
         //make gamePanel focusable so it can handle events
         setFocusable(true);
+
+        senSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+    protected void onPause() {
+        //super.onPause();
+        senSensorManager.unregisterListener(this);
+    }
+
+    protected void onResume() {
+        //super.onResume();
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        long curTime = System.currentTimeMillis();
+
+        if ((curTime - lastUpdate) > 100) {
+            //long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+            Sensor mySensor = sensorEvent.sensor;
+
+            if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+
+                float x = sensorEvent.values[0];
+                if (player != null)
+                    player.changeX((x*4)*-1);
+                //float y = sensorEvent.values[1];
+                //float z = sensorEvent.values[2];
+            }
+        }
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){}

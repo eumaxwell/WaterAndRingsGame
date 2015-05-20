@@ -5,6 +5,11 @@ package ringsinwater.delorean.com.ringsinwater;
  */
 
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +19,8 @@ import android.view.WindowManager;
 import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 
 
-public class Game extends Activity {
+public class Game extends Activity  {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +34,6 @@ public class Game extends Activity {
 
         setContentView(new GamePanel(this));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
