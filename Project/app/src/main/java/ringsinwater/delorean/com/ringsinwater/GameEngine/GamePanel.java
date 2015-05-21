@@ -4,6 +4,7 @@ package ringsinwater.delorean.com.ringsinwater.GameEngine;
  * Created by Max on 16/05/2015.
  */
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -151,7 +152,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
     @Override
     public void surfaceCreated(SurfaceHolder holder){
 
-        bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.fundo));
+        bg = new Background(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                getResources(), R.drawable.fundo), WIDTH, HEIGHT, true));
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
         smoke = new ArrayList<Smokepuff>();
         missiles = new ArrayList<Missile>();
