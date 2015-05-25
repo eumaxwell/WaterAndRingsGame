@@ -2,6 +2,8 @@ package ringsinwater.delorean.com.ringsinwater.GameObjects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import java.util.Random;
 
@@ -11,15 +13,14 @@ import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
  * Created by Max on 19/05/2015.
  */
 public class Ring extends GameObject {
-    private Bitmap bmpRing;
+
     private boolean up;
+    private Paint paint = new Paint(Color.BLUE);
 
-    public Ring(Bitmap res) {
-
-        bmpRing = res;
+    public Ring(int posX, int posY) {
         Random r = new Random();
-        x = 100;//r.nextInt();
-        y = 100;//r.nextInt();
+        x = posX;//r.nextInt();
+        y = posY;//r.nextInt();
         dy = 0;
     }
 
@@ -41,6 +42,8 @@ public class Ring extends GameObject {
             y = 1;
         if (y > GamePanel.HEIGHT-50)
             y = GamePanel.HEIGHT-51;
+
+
     }
 
     public void changeX(float x)    {
@@ -54,6 +57,7 @@ public class Ring extends GameObject {
     }
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(bmpRing,x,y,null);
+        canvas.drawCircle(x,y,50, paint);
     }
+
 }

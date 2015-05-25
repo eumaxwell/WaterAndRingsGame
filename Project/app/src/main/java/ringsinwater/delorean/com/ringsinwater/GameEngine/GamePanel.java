@@ -28,6 +28,7 @@ import ringsinwater.delorean.com.ringsinwater.GameObjects.BotBorder;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Explosion;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Missile;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Player;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Ring;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Smokepuff;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.TopBorder;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.GameObject;
@@ -38,22 +39,32 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 {
     public static int WIDTH ;
     public static int HEIGHT;
+
     public static final int MOVESPEED = -5;
+
     private long smokeStartTime;
     private long missileStartTime;
+
     private MainThread thread;
     private Background bg;
     private Player player;
+
     private ArrayList<Smokepuff> smoke;
     private ArrayList<Missile> missiles;
     private ArrayList<TopBorder> topborder;
     private ArrayList<BotBorder> botborder;
+    private ArrayList<Ring> rings;
+
     private Random rand = new Random();
+
     private int maxBorderHeight;
     private int minBorderHeight;
+
     private boolean topDown = true;
     private boolean botDown = true;
     private boolean newGameCreated;
+
+
 
     //increase to slow down difficulty progression, decrease to speed up difficulty progression
     private int progressDenom = 20;
@@ -161,6 +172,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
         botborder = new ArrayList<BotBorder>();
         smokeStartTime=  System.nanoTime();
         missileStartTime = System.nanoTime();
+        rings = new ArrayList<Ring>();
+        for (int i =0; i < 5; i++){
+            rings.add(new Ring(rand.nextInt(WIDTH),rand.nextInt(HEIGHT)));
+        }
 
         thread = new MainThread(getHolder(), this);
         //we can safely start the game loop
@@ -213,6 +228,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 
             bg.update();
             player.update();
+            for (Ring r : rings){
+                r.update();
+            }
+
 
             //calculate the threshold of height the border can have based on the score
             //max and min border heart are updated, and the border switched direction when either max or
@@ -356,6 +375,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
                 m.draw(canvas);
             }
 
+            //draw rings
+            for(Ring r: rings)
+            {
+                r.draw(canvas);
+            }
 
             //draw topborder
             for(TopBorder tb: topborder)
