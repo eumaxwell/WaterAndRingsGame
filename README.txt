@@ -10,5 +10,6 @@ http://gamedevelopment.tutsplus.com/series/how-to-create-a-custom-physics-engine
 http://developer.android.com/guide/topics/graphics/2d-graphics.html
 
 Novo link:
+todo - gravidade e colisão. colocar botao
 http://www.wildbunny.co.uk/blog/2011/12/14/how-to-make-a-2d-platform-game-part-2-collision-detection/
 
