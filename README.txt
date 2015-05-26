@@ -9,4 +9,6 @@ http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-
 http://gamedevelopment.tutsplus.com/series/how-to-create-a-custom-physics-engine--gamedev-12715
 http://developer.android.com/guide/topics/graphics/2d-graphics.html
 
-teste
+Novo link:
+http://www.wildbunny.co.uk/blog/2011/12/14/how-to-make-a-2d-platform-game-part-2-collision-detection/
+
