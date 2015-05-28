@@ -13,3 +13,5 @@ Novo link:
 todo - gravidade e colisão. colocar botao
 http://www.wildbunny.co.uk/blog/2011/12/14/how-to-make-a-2d-platform-game-part-2-collision-detection/
 
+link com código em java com colisão e fisica
+http://www.ntu.edu.sg/home/ehchua/programming/java/J8a_GameIntro-BouncingBalls.html
