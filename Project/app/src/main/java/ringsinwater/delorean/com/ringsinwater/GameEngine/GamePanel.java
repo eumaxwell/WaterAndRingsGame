@@ -113,21 +113,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        long curTime = System.currentTimeMillis();
+        if (rings != null) {
+            long curTime = System.currentTimeMillis();
 
-        if ((curTime - lastUpdate) > 100) {
-            //long diffTime = (curTime - lastUpdate);
-            lastUpdate = curTime;
-            Sensor mySensor = sensorEvent.sensor;
+            if ((curTime - lastUpdate) > 100) {
+                //long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+                Sensor mySensor = sensorEvent.sensor;
 
-            if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-
-                float x = sensorEvent.values[0];
-                if (player != null)
-                    player.changeX((x*4)*-1);
-                //float y = sensorEvent.values[1];
-                //float z = sensorEvent.values[2];
+                    float x = sensorEvent.values[0];
+                    //float y = sensorEvent.values[1];
+                    //float z = sensorEvent.values[2];
+                    for(Ring r : rings) {
+                        r.changeX((x) * -1);
+                    }
+                }
             }
         }
     }
@@ -173,7 +175,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
         smokeStartTime=  System.nanoTime();
         missileStartTime = System.nanoTime();
         rings = new ArrayList<Ring>();
-        for (int i =0; i < 5; i++){
+        for (int i =0; i < 2; i++){
             rings.add(new Ring(rand.nextInt(WIDTH),rand.nextInt(HEIGHT)));
         }
 
@@ -191,28 +193,52 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             {
                 player.setPlaying(true);
                 player.setUp(true);
+
             }
             if(player.getPlaying())
             {
-
                 if(!started)started = true;
                 reset = false;
                 player.setUp(true);
+                for(Ring r : rings) {
+                    r.setUp(true);
+                }
             }
             return true;
         }
         if(event.getAction()==MotionEvent.ACTION_UP)
         {
             player.setUp(false);
+            for(Ring r : rings) {
+                r.setUp(false);
+            }
             return true;
         }
 
         return super.onTouchEvent(event);
     }
 
+    long ringsStartTime=0;
     public void update()
-
     {
+
+        for (int i=0;i<rings.size();i++)
+        {
+            for (int j=i+1;j<rings.size();j++){
+                if (collision(rings.get(i),rings.get(j)))
+                {
+                    if (System.nanoTime()-ringsStartTime > 100)
+                    {
+                        rings.get(i).invertDx();
+                        rings.get(i).invertDy();
+                        rings.get(j).invertDx();
+                        rings.get(j).invertDy();
+                    }
+                }
+            }
+        }
+        ringsStartTime = System.nanoTime();
+
         if(player.getPlaying()) {
 
             if(botborder.isEmpty())
@@ -228,6 +254,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 
             bg.update();
             player.update();
+
+
             for (Ring r : rings){
                 r.update();
             }
@@ -243,18 +271,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             minBorderHeight = 5+player.getScore()/progressDenom;
 
             //check bottom border collision
-            for(int i = 0; i<botborder.size(); i++)
-            {
-                if(collision(botborder.get(i), player))
-                    player.setPlaying(false);
-            }
+           //for(int i = 0; i<botborder.size(); i++)
+           //{
+           //    if(collision(botborder.get(i), player))
+           //        player.setPlaying(false);
+           //}
 
             //check top border collision
-            for(int i = 0; i <topborder.size(); i++)
-            {
-                if(collision(topborder.get(i),player))
-                    player.setPlaying(false);
-            }
+           //for(int i = 0; i <topborder.size(); i++)
+           //{
+           //    if(collision(topborder.get(i),player))
+           //        player.setPlaying(false);
+           //}
 
             //update top border
             this.updateTopBorder();
@@ -289,12 +317,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
                 //update missile
                 missiles.get(i).update();
 
-                if(collision(missiles.get(i),player))
-                {
-                    missiles.remove(i);
-                    player.setPlaying(false);
-                    break;
-                }
+                //if(collision(missiles.get(i),player))
+                //{
+                //    missiles.remove(i);
+                //    player.setPlaying(false);
+                //    break;
+                //}
                 //remove missile if it is way off the screen
                 if(missiles.get(i).getX()<-100)
                 {
@@ -342,6 +370,50 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 
         }
 
+    }
+    public boolean collision(Ring a, Ring b)
+    {
+        int ax = a.getX();
+        int bx = b.getX();
+        int ay = a.getY();
+        int by = b.getY();
+        int ar = a.getRadius();
+        int br = b.getRadius();
+
+        int resultX = bx-ax;
+        if (resultX < 0)
+            resultX*=-1;
+        if (resultX < ar+br) // mesma linha X
+        {
+            int resultY = by-ay;
+            if (resultY < 0)
+                resultY*=-1;
+            if (resultY < ar+br) // mesma linha y
+            {
+                if(ax<bx)
+                {
+                    a.setX(ax-2);
+                    b.setX(bx+2);
+                } else
+                {
+                    a.setX(ax+2);
+                    b.setX(bx-2);
+                }
+
+                if(ay<by) {
+                    a.setY(ay-2);
+                    b.setY(by+2);
+                }
+                else
+                {
+                    a.setY(ay+2);
+                    b.setY(by-2);
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
     public boolean collision(GameObject a, GameObject b)
     {

@@ -15,6 +15,7 @@ import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 public class Ring extends GameObject {
 
     private boolean up;
+    private int radius = 30;
     private Paint paint = new Paint(Color.BLUE);
 
     public Ring(int posX, int posY) {
@@ -22,42 +23,67 @@ public class Ring extends GameObject {
         x = posX;//r.nextInt();
         y = posY;//r.nextInt();
         dy = 0;
+        dx = 0;
     }
 
-    public void setUp(boolean b){up = b;}
+    public void setUp(boolean b){
+        if(b){
+            dy -=5;
+        }
+    }
     public void update()
     {
-        if(up){
-            dy -=2;
-        }
-        else{
-            dy +=2;
-        }
+        if(dy>15)dy = 15;
+        if(dy<-15)dy = -15;
 
-        if(dy>20)dy = 20;
-        if(dy<-20)dy = -20;
-
-        y += dy*2;
-        if (y < 0)
+        y += dy;
+        dy++;
+        if (y < 0) {
             y = 1;
-        if (y > GamePanel.HEIGHT-50)
-            y = GamePanel.HEIGHT-51;
+            dx=dy;
+            dy=0;
+        }
+        if (y > GamePanel.HEIGHT-radius) {
+            y = GamePanel.HEIGHT - radius;
+        }
 
+        if(dx>5)dx = 5;
+        if(dx<-5)dx = -5;
+
+        x += dx;
+        if (x+radius < radius) {
+            x = radius;
+            dy=dx;
+            dx=0;
+        }
+        if (x > GamePanel.WIDTH-radius) {
+            x = GamePanel.WIDTH - radius;
+        }
 
     }
 
-    public void changeX(float x)    {
-
-        this.x += x;
-        if (this.x < 0)
-            this.x = 1;
-        if (this.x > GamePanel.WIDTH-50)
-            this.x = GamePanel.WIDTH-51;
-
+    public void changeX(float movX)    {
+        dx +=movX;
     }
     public void draw(Canvas canvas)
     {
-        canvas.drawCircle(x,y,50, paint);
+        canvas.drawCircle(x,y,radius, paint);
     }
 
+    public void setX(int x)
+    {
+        this.x = x;
+        if (this.x < radius) {
+            this.x = radius;
+        }
+        if (this.x > GamePanel.HEIGHT-radius) {
+            this.x = GamePanel.HEIGHT-radius;
+        }
+    }
+
+    public int getRadius(){return radius;}
+    public int getDx(){return dx;}
+    public int getDy(){return dy;}
+    public void invertDx(){dx*=-1;}
+    public void invertDy(){dy*=-1;}
 }
