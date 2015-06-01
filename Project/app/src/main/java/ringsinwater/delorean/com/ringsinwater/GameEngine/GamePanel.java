@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Background;
+import ringsinwater.delorean.com.ringsinwater.GameObjects.Ball;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.BotBorder;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Explosion;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Missile;
@@ -54,6 +55,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
     private ArrayList<TopBorder> topborder;
     private ArrayList<BotBorder> botborder;
     private ArrayList<Ring> rings;
+    private ArrayList<Ball> balls;
 
     private Random rand = new Random();
 
@@ -175,9 +177,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
         smokeStartTime=  System.nanoTime();
         missileStartTime = System.nanoTime();
         rings = new ArrayList<Ring>();
-        for (int i =0; i < 2; i++){
+        balls = new ArrayList<Ball>();
+        for (int i =0; i < 4; i++){
             rings.add(new Ring(rand.nextInt(WIDTH),rand.nextInt(HEIGHT)));
+            balls.add(new Ball(rand.nextInt(WIDTH),rand.nextInt(HEIGHT),30));
         }
+
 
         thread = new MainThread(getHolder(), this);
         //we can safely start the game loop
@@ -238,6 +243,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             }
         }
         ringsStartTime = System.nanoTime();
+
+
+        for (Ball b:balls)
+        {
+            b.update();
+        }
+        detectCollisions();
 
         if(player.getPlaying()) {
 
@@ -453,6 +465,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
                 r.draw(canvas);
             }
 
+            for(Ball b: balls)
+            {
+                b.draw(canvas);
+            }
+
             //draw topborder
             for(TopBorder tb: topborder)
             {
@@ -643,5 +660,63 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
         }
     }
 
+    public void detectCollisions()
+    {
+        //this.transform.colorTransform = new ColorTransform(1, 1, 1, 1, 0, 0, 0, 0);
+        for (int i = 0; i < balls.size(); i++) {
+            Ball ballA = balls.get(i);
+            for (int j = i+1; j < balls.size(); j++) {
+                Ball ballB = balls.get(j);
+                if (ballA.getX() + ballA.ballRadius + ballB.ballRadius > ballB.getX()
+                        && ballA.getX() < ballB.getX() + ballA.ballRadius + ballB.ballRadius
+                        && ballA.getY() + ballA.ballRadius + ballB.ballRadius > ballB.getY()
+                        && ballA.getY() < ballB.getY() + ballA.ballRadius + ballB.ballRadius) {
+                    if (distanceTo(ballA, ballB) < ballA.ballRadius + ballB.ballRadius) {
+                        //this.transform.colorTransform = new ColorTransform(0, 0, 0, 1, 0, 255, 0, 0);
+                        //drawCollision(ballA, ballB);
+                        calculateNewVelocities(ballA, ballB);
+                    }
+                }
+            }
+        }
+    }
+
+    public double distanceTo(Ball a, Ball b)
+    {
+        double distance = Math.sqrt(((a.getX() - b.getX()) * (a.getX() - b.getX())) + ((a.getY() - b.getY()) * (a.getY() - b.getY())));
+        if (distance < 0)
+        {
+            distance = distance * -1;
+        }
+        return distance;
+    }
+
+    public void calculateNewVelocities( Ball firstBall, Ball secondBall)
+    {
+        int mass1 = firstBall.ballRadius;
+        int mass2 = secondBall.ballRadius;
+        int velX1 = firstBall.speedX;
+        int velX2 = secondBall.speedX;
+        int velY1 = firstBall.speedY;
+        int velY2 = secondBall.speedY;
+
+        int newVelX1 = (velX1 * (mass1 - mass2) + (2 * mass2 * velX2)) / (mass1 + mass2);
+        int newVelX2 = (velX2 * (mass2 - mass1) + (2 * mass1 * velX1)) / (mass1 + mass2);
+        int newVelY1 = (velY1 * (mass1 - mass2) + (2 * mass2 * velY2)) / (mass1 + mass2);
+        int newVelY2 = (velY2 * (mass2 - mass1) + (2 * mass1 * velY1)) / (mass1 + mass2);
+        //trace (velX1 * (mass1 - mass2) );
+        //trace (2 * mass2 * velX2);
+        //trace(newVelX1);
+
+        firstBall.speedX = newVelX1;
+        secondBall.speedX = newVelX2;
+        firstBall.speedY = newVelY1;
+        secondBall.speedY = newVelY2;
+
+        firstBall.setX(firstBall.getX() + newVelX1);
+        firstBall.setY(firstBall.getY() + newVelY1);
+        secondBall.setX(secondBall.getX() + newVelX2);
+        secondBall.setY(secondBall.getY() + newVelY2);
+    }
 
 }
