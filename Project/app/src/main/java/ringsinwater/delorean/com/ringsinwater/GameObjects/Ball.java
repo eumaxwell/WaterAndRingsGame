@@ -17,6 +17,8 @@ public class Ball extends GameObject {
     public int speedX;
     public int speedY;
     public int ballRadius;
+    private int maximumX;
+    private int maximumY;
 
     public Ball(int xPos, int yPos, int rad)
     {
@@ -26,35 +28,68 @@ public class Ball extends GameObject {
         x = xPos;
         y = yPos;
         ballRadius = rad;
+
+        maximumX = GamePanel.WIDTH-ballRadius;
+        maximumY = GamePanel.HEIGHT-ballRadius;
+
     }
 
     public void update()
     {
         x += speedX;
         y += speedY;
-        if (x >= GamePanel.WIDTH - ballRadius && speedY > 0) speedX = -speedX;
-        if (x <= ballRadius && speedX < 0) speedX = -speedX;
-        if (y >= GamePanel.HEIGHT - ballRadius && speedY > 0) speedY = -speedY;
-        if (y <= ballRadius && speedY < 0) speedY = -speedY;
+
+        speedY++;
+
+        //if (speedY > 0)
+        //    speedY--;
+        //else
+        if (speedY < 0)
+            speedY++;
+        if (speedX > 0)
+            speedX--;
+        else if (speedX < 0)
+            speedX++;
+
+        if (x >= maximumX && speedX > 0){
+            speedX = -speedX;
+        }
+        if (x <= ballRadius && speedX < 0){
+            speedX = -speedX;
+        }
+        if (y >= maximumY && speedY > 0){
+            speedY = -speedY;
+        }
+        if (y <= ballRadius && speedY < 0){
+            speedY = -speedY;
+        }
 
         if (y < 0) {
             y = 1;
         }
-        if (x+ballRadius < ballRadius) {
-            x = ballRadius+1;
+        if (y > maximumY) {
+            y = maximumY-5;
         }
-        if (y > GamePanel.HEIGHT-ballRadius) {
-            y = GamePanel.HEIGHT-ballRadius-1;
+        if (x < ballRadius) {
+            x = ballRadius+5;
         }
-
-        if (x > GamePanel.WIDTH-ballRadius) {
-            x = GamePanel.WIDTH-ballRadius-1;
+        if (x >= maximumX) {
+            x = maximumX-5;
         }
     }
 
     public void draw(Canvas canvas)
     {
         canvas.drawCircle(x,y,ballRadius,new Paint(Color.GRAY));
+    }
+
+    public void up() {
+        speedX+= speedX/2;
+        speedY-= 20;
+    }
+
+    public void changeX(float x) {
+        speedX+=x;
     }
 
     //public void detectCollisions()

@@ -86,4 +86,24 @@ public class Ring extends GameObject {
     public int getDy(){return dy;}
     public void invertDx(){dx*=-1;}
     public void invertDy(){dy*=-1;}
+
+    public boolean colliding(Ring ball)
+    {
+        float xd = getX() - ball.getX();
+        float yd = getY() - ball.getY();
+
+        float sumRadius = getRadius() + ball.getRadius();
+        float sqrRadius = sumRadius * sumRadius;
+
+        float distSqr = (xd * xd) + (yd * yd);
+
+        if (distSqr <= sqrRadius)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
