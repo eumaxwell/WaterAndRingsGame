@@ -5,6 +5,7 @@ package ringsinwater.delorean.com.ringsinwater.GameObjects;
  */
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import ringsinwater.delorean.com.ringsinwater.GameEngine.GamePanel;
 
@@ -24,12 +25,12 @@ public class Background {
             x=0;
         }
     }
-    public void draw(Canvas canvas)
+    public void draw(Canvas canvas, Paint paint)
     {
         canvas.drawBitmap(image, x, y,null);
         if(x<0)
         {
-            canvas.drawBitmap(image, x+GamePanel.WIDTH, y, null);
+            canvas.drawBitmap(image, x+GamePanel.WIDTH, y, paint);
         }
     }
     public void setVector(int dx)

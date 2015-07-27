@@ -3,13 +3,13 @@ package ringsinwater.delorean.com.ringsinwater.GameEngine;
 /**
  * Created by Max on 16/05/2015.
  */
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,20 +19,16 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Background;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Ball;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.BotBorder;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Explosion;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.Missile;
 import ringsinwater.delorean.com.ringsinwater.GameObjects.Player;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.Ring;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.Smokepuff;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.TopBorder;
-import ringsinwater.delorean.com.ringsinwater.GameObjects.GameObject;
 import ringsinwater.delorean.com.ringsinwater.R;
 
 
@@ -40,6 +36,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 {
     public static int WIDTH ;
     public static int HEIGHT;
+
+    private float alcanceXBotao;
+    private float alcanceYBotao;
+    private float alcanceXBotaoB;
 
     public static final int MOVESPEED = -5;
 
@@ -69,6 +69,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
 
+    private Paint paint;
+
+    private Button buttonA;
+
     public GamePanel(Context context)
     {
 
@@ -84,6 +88,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 
         //make gamePanel focusable so it can handle events
         setFocusable(true);
+
+        paint = new Paint();
+
+        // as dimensões de um quadrado
+        alcanceXBotao = (WIDTH / 3); // 2/3 do tamanho de X
+        alcanceYBotao = HEIGHT - (HEIGHT / 3)*2; // 1/3 do tamanho de Y
+        alcanceXBotaoB = WIDTH - alcanceXBotao;
 
         senSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -160,9 +171,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
 
         balls = new ArrayList<Ball>();
         for (int i =0; i < 5; i++){
-            balls.add(new Ball(rand.nextInt(WIDTH),rand.nextInt(HEIGHT),30));
+            Ball ball = new Ball(rand.nextInt(WIDTH),rand.nextInt(HEIGHT),30);
+            balls.add(ball);
         }
 
+        buttonA = new Button(getContext());
+        buttonA.setText("TestButton");
+        buttonA.setClickable(true);
+        buttonA.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                //Log.i(TAG, "Button Pressed!");
+            }
+        });
+
+        ActionBar.LayoutParams layoutButton = new ActionBar.LayoutParams(10,10);
+        buttonA.setLayoutParams(layoutButton);
 
         thread = new MainThread(getHolder(), this);
         //we can safely start the game loop
@@ -173,6 +196,38 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        if(!player.getPlaying() && newGameCreated && reset)
+        {
+            player.setPlaying(true);
+            player.setUp(true);
+
+        }
+        if(player.getPlaying()) {
+            float x = event.getX();
+            float y = event.getY();
+
+            if (x < alcanceXBotao)
+            {
+                if (y > alcanceYBotao) {
+                    for (Ball b : balls) {
+                        if (b.getX() < alcanceXBotao && b.getY() > alcanceYBotao) {
+                            b.up();
+                        }
+                    }
+                }
+            }
+            else if (x > alcanceXBotaoB)
+            {
+                if (y > alcanceYBotao) {
+                    for (Ball b : balls) {
+                        if (b.getX() > alcanceXBotaoB && b.getY() > alcanceYBotao) {
+                            b.up();
+                        }
+                    }
+                }
+            }
+        }
+/*
         if(event.getAction()==MotionEvent.ACTION_DOWN){
             if(!player.getPlaying() && newGameCreated && reset)
             {
@@ -192,7 +247,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             }
             return true;
         }
-/*        if(event.getAction()==MotionEvent.ACTION_UP)
+        if(event.getAction()==MotionEvent.ACTION_UP)
         {
             player.setUp(false);
             for(Ring r : rings) {
@@ -249,14 +304,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
         if(canvas!=null) {
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
-            bg.draw(canvas);
+            bg.draw(canvas, paint);
             if(!dissapear) {
                 player.draw(canvas);
             }
 
             for(Ball b: balls)
             {
-                b.draw(canvas);
+                b.draw(canvas, paint);
             }
 
             //draw explosion
@@ -264,6 +319,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             {
                 explosion.draw(canvas);
             }
+
+            buttonA.draw(canvas);
+
             drawText(canvas);
             canvas.restoreToCount(savedState);
 

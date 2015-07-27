@@ -3,6 +3,7 @@ package ringsinwater.delorean.com.ringsinwater.GameObjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.View;
 
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class Ball extends GameObject {
     public int ballRadius;
     private int maximumX;
     private int maximumY;
+    private int color;
 
     public Ball(int xPos, int yPos, int rad)
     {
@@ -28,6 +30,8 @@ public class Ball extends GameObject {
         x = xPos;
         y = yPos;
         ballRadius = rad;
+
+        color = rand.nextInt(255);
 
         maximumX = GamePanel.WIDTH-ballRadius;
         maximumY = GamePanel.HEIGHT-ballRadius;
@@ -68,19 +72,20 @@ public class Ball extends GameObject {
             y = 1;
         }
         if (y > maximumY) {
-            y = maximumY-5;
+            y = maximumY-1;
         }
         if (x < ballRadius) {
-            x = ballRadius+5;
+            x = ballRadius+1;
         }
         if (x >= maximumX) {
-            x = maximumX-5;
+            x = maximumX-1;
         }
     }
 
-    public void draw(Canvas canvas)
+    public void draw(Canvas canvas, Paint paint)
     {
-        canvas.drawCircle(x,y,ballRadius,new Paint(Color.GRAY));
+        paint.setColor(Color.GRAY);
+        canvas.drawCircle(x,y,ballRadius,paint);
     }
 
     public void up() {
