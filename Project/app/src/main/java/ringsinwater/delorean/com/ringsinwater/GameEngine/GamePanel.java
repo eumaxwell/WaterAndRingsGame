@@ -117,7 +117,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Se
             long curTime = System.currentTimeMillis();
 
             if ((curTime - lastUpdate) > 100) {
-                //long diffTime = (curTime - lastUpdate);
                 lastUpdate = curTime;
                 Sensor mySensor = sensorEvent.sensor;
 
